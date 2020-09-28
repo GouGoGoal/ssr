@@ -88,6 +88,7 @@ mv tcping /usr/sbin
 chmod +x /usr/sbin/tcping
 
 if [ "$4" != "0" -a "$4" != ""  ];then
+mv -f state.py /etc
 #添加探针服务
 echo "[Unit]
 Description=state deamon
@@ -95,11 +96,12 @@ After=rc-local.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /root/ssr/state.py
+ExecStart=/usr/bin/python3 /etc/state.py
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target">/etc/systemd/system/state.service
-sed -i "s/node/$2/" state.py
+#传入参数
+sed -i "s|node|$4|" state.py
 systemctl enable state
 systemctl restart state
 echo "$4.lovegoogle.xyz已添加探针"
@@ -161,5 +163,5 @@ sysctl -p
 echo "针对kvm优化参数，已开启BBR，已修改启动时间"
 read -p "输入nodeID参数继续对接V2ray" v2_node
 if [ "$v2_node" != "" ]; then 
-bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/GouGoGoal/v2ray/master/setup.sh') $v2_node
+bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/GouGoGoal/v2ray/master/setup.sh') $v2_node $2 $3
 fi
