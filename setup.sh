@@ -88,7 +88,6 @@ mv tcping /usr/sbin
 chmod +x /usr/sbin/tcping
 
 if [ "$4" != "0" -a "$4" != ""  ];then
-mv -f state.py /etc
 #添加探针服务
 echo "[Unit]
 Description=state deamon
@@ -100,8 +99,9 @@ ExecStart=/usr/bin/python3 /etc/state.py
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target">/etc/systemd/system/state.service
+mv -f state.py /etc
 #传入参数
-sed -i "s|node|$4|" state.py
+sed -i "s|node|$4|" /etc/state.py
 systemctl enable state
 systemctl restart state
 echo "$4.lovegoogle.xyz已添加探针"
