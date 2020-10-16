@@ -41,12 +41,6 @@ pip3 install cymysql requests pyOpenSSL ndg-httpsclient pyasn1 pycparser pycrypt
 mv apiconfig.py userapiconfig.py
 mv config.json user-config.json
 
-if [ "$1" != '0' ];then
-#传入对接参数
-sed -i "s|node_id|$1|" userapiconfig.py
-sed -i "s|webapi_url|$2|" userapiconfig.py
-sed -i "s|webapi_token|$3|" userapiconfig.py
-
 #添加服务
 echo "[Unit]
 Description=SSR deamon
@@ -63,9 +57,17 @@ LimitNPROC=512000
 # MemoryMax=25%
 [Install]
 WantedBy=multi-user.target">/etc/systemd/system/ssr.service
+
+if [ "$1" != '0' ];then
+#传入对接参数
+sed -i "s|node_id|$1|" userapiconfig.py
+sed -i "s|webapi_url|$2|" userapiconfig.py
+sed -i "s|webapi_token|$3|" userapiconfig.py
+
 systemctl enable ssr
 systemctl restart ssr
 fi
+
 #修改时区
 timedatectl set-timezone Asia/Shanghai
 #赋予脚本可执行权限
