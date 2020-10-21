@@ -126,6 +126,8 @@ address /indazn.com/$jpip
 address /app-measurement.com/$jpip
 #DMM
 address /dmm.com/$jpip
+#日本Paravi
+address /paravi.jp/$jpip
 #PornHub
 #address /pornhub.com/$jpip
 #address /phncdn.com/$jpip
