@@ -108,7 +108,7 @@ address /hdslb.com/$twip
 #日本AbemaTV
 address /ameba.jp/$jpip
 address /abema.io/$jpip
-address /akamaized.net/$jpip
+address /ds-linear-abematv.akamaized.net/$jpip
 #TVer
 address /tver.jp/$jpip
 address /amazonaws.com/$jpip
@@ -149,13 +149,10 @@ address /espncdn.com/$usip
 address /bamgrid.com/$usip
 #美国peaacock
 address /peacocktv.com/$usip
-#中国腾讯视频
-address /v.qq.com/$cnip
-address /video.qq.com/$cnip
-#中国爱奇艺
-address /qiyi.comm/$cnip
-address /qy.net/$cnip
-address /iqiyipic.com/$cnip
+#美国
+address /britbox.com/$usip
+address /bbccomm.s.llnwi.net/$usip
+address /vod-dash-ntham-comm-live.akamaized.net/$usip
 ">/etc/smartdns.conf
 #重启服务
 systemctl restart smartdns
