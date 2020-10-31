@@ -3,7 +3,7 @@
 #获取脚本相对路径
 DIR=`dirname $0`
 chmod +x  $DIR/smartdns
-mv $DIR/smartdns /usr/sbin
+cp $DIR/smartdns /usr/sbin
 #加载服务
 echo "[Unit]
 Description=SmartDNS server
@@ -25,8 +25,8 @@ systemctl enable smartdns
 #给脚本执行权限
 chmod +x $DIR/smartdns.sh
 #移动/etc下
-mv $DIR/smartdns.sh /etc/smartdns.sh
-mv $DIR/ban.conf /etc/ban.conf
+cp $DIR/smartdns.sh /etc/smartdns.sh
+cp $DIR/ban.conf /etc/ban.conf
 #执行一次
 bash /etc/smartdns.sh
 #添加定时脚本
