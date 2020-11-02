@@ -30,7 +30,7 @@ cp $DIR/ban.conf /etc/ban.conf
 #执行一次
 bash /etc/smartdns.sh
 #添加定时脚本
-echo "* * * * * root /etc/smartdns.sh">>/etc/crontab
+echo "* * * * * root bash /etc/smartdns.sh">>/etc/crontab
 #提示
 echo "部署完毕，定时任务添加至/etc/crontab"
 echo "后续可通过/etc/smartdns.sh更改解锁地址"
