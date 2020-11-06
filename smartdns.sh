@@ -72,7 +72,7 @@ speed-check-mode ping,tcp:80
 dualstack-ip-selection no
 #dualstack-ip-selection-threshold 30
 #完全不解析IPV6
-#force-AAAA-SOA yes
+force-AAAA-SOA yes
 #日志级别 error
 log-level error
 #日志位置
@@ -149,7 +149,7 @@ address /espncdn.com/$usip
 address /bamgrid.com/$usip
 #美国peaacock
 address /peacocktv.com/$usip
-#美国
+#美国britbox
 address /britbox.com/$usip
 address /bbccomm.s.llnwi.net/$usip
 address /vod-dash-ntham-comm-live.akamaized.net/$usip
