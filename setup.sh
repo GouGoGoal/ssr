@@ -49,6 +49,9 @@ After=rc-local.service
 Type=simple
 ExecStart=/usr/bin/python3 /root/ssr/server.py
 Restart=always
+#启动频率限制，开启启动失败时尝试
+#StartLimitIntervalSec=180
+#StartLimitBurst=90
 LimitNOFILE=512000
 LimitNPROC=512000
 # 柔性限制
