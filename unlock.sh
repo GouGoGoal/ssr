@@ -1,5 +1,18 @@
 #! /bin/bash
 
+#检查host指令
+if [ ! "`command -v host`" ];then
+    if [ ! -f "/etc/redhat-release" ];then
+        apt install -y host
+    else 
+		yum install -y bind-utils
+    fi
+	if [ "$?"!= 0];then 
+		echo "host命令安装失败，请自行解决后重新运行该脚本"
+		exit
+	fi
+fi
+
 #获取脚本相对路径
 DIR=`dirname $0`
 chmod +x  $DIR/smartdns
@@ -27,6 +40,7 @@ chmod +x $DIR/smartdns.sh
 #移动/etc下
 cp $DIR/smartdns.sh /etc/smartdns.sh
 cp $DIR/ban.conf /etc/ban.conf
+
 #执行一次
 bash /etc/smartdns.sh
 #添加定时脚本

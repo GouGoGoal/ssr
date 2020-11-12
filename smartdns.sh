@@ -1,43 +1,23 @@
 #!/bin/bash
-
+#设置查询DNS，建议在哪儿解析就设置哪儿的DNS
+DNS='1.1.1.1'
 #获取当前的流媒体解锁IP，若不解锁某区域的流媒体注释掉即可
-twip=`ping -c1 -w1 unlock.tw.soulout.club|awk -F'[(|)]' 'NR==1{print $2}'`
-hkip=`ping -c1 -w1 unlock.hk.soulout.club|awk -F'[(|)]' 'NR==1{print $2}'`
-jpip=`ping -c1 -w1 unlock.jp.soulout.club|awk -F'[(|)]' 'NR==1{print $2}'` 
-usip=`ping -c1 -w1 unlock.us.soulout.club|awk -F'[(|)]' 'NR==1{print $2}'` 
-#cnip=`ping -c1 -w1 unlock.cn.soulout.club|awk -F'[(|)]' 'NR==1{print $2}'` 
-#sgip=`ping -c1 -w1 unlock.sg.soulout.club|awk -F'[(|)]' 'NR==1{print $2}'` 
+twip=`host -4 -T -t A -W 1 unlock.tw.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+hkip=`host -4 -T -t A -W 1 unlock.hk.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+jpip=`host -4 -T -t A -W 1 unlock.jp.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+usip=`host -4 -T -t A -W 1 unlock.us.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+#sgip=`host -4 -T -t A -W 1 unlock.sg.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
 
 #奈飞IP，就近解锁，美国鸡就写usip
 #nfip=$hkip
 
-
-
 #若查询不到则赋值为-，即忽略
-if [ "$twip" = "" ]; then twip="-"; fi
-if [ "$hkip" = "" ]; then hkip="-"; fi
-if [ "$jpip" = "" ]; then jpip="-"; fi
-if [ "$usip" = "" ]; then usip="-"; fi
-if [ "$cnip" = "" ]; then cnip="-"; fi
-if [ "$sgip" = "" ]; then sgip="-"; fi
-if [ "$nfip" = "" ]; then nfip="-"; fi
-#释放内存，若需要开启，请将代码最下方的freeram函数注释掉
-freeram() {
-	#获取总共内存
-	totally_ram=`free -m | awk '/Mem/ {print $2}'`
-	#获取当前使用的swap量
-	used_swap=`free -m | awk '/Swap/ {print $3}'`
-	#如果swap=0,则退出脚本，如果总内存/swap用量小于10，即swap超过物理内存的10%
-	if [ "$used_swap" -eq 0 ]; then
-		exit 
-	elif [ `expr $totally_ram / $used_swap` -lt 10 ]; then
-		#内存释放执行的命令,重启docker之类的
-		systemctl restart ssr v2ray docker
-		swapoff -a && swapon -a
-		echo "IP无变动，但当前RAM不足，已重启相关服务"
-		exit
-	fi
-}
+if [ ! "$twip" ];then twip='-';fi
+if [ ! "$hkip" ];then hkip='-';fi
+if [ ! "$jpip" ];then jpip='-';fi
+if [ ! "$usip" ];then usip='-';fi
+if [ ! "$sgip" ];then sgip='-';fi
+if [ ! "$nfip" ];then nfip='-';fi
 
 #定义刷新smartdns参数并重启的函数
 flush_smartdns_conf() {
@@ -159,27 +139,28 @@ systemctl restart smartdns
 }
 
 if [ ! -f "/etc/smartdns.conf" ]; then 
-	echo "当前无配置文件，已生成"
+	echo '当前无配置文件，已生成'
 	flush_smartdns_conf
 else
 	#对比IP变化，有变化就刷新重启smartdns
-	if [ "`grep $twip /etc/smartdns.conf`" == "" -o "`grep $hkip /etc/smartdns.conf`" == "" -o "`grep $jpip /etc/smartdns.conf`" == "" -o "`grep $usip /etc/smartdns.conf`" == "" -o "`grep $cnip /etc/smartdns.conf`" == "" -o "`grep $sgip /etc/smartdns.conf`" == "" ];then
-		echo "IP有变化，已重新生成配置文件"
+	if [ ! "`grep $twip /etc/smartdns.conf`" -o ! "`grep $hkip /etc/smartdns.conf`" -o ! "`grep $jpip /etc/smartdns.conf`" -o ! "`grep $usip /etc/smartdns.conf`" -o ! "`grep $sgip /etc/smartdns.conf`" ];then
+		echo 'IP有变化，已重新生成配置文件'
 		flush_smartdns_conf
 	else 
-		echo "IP无变化，退出脚本"
+		echo 'IP无变化，退出脚本'
 	fi     
 fi
 
-#iptables劫持DNS，若规则经常意外丢失就取消此处注释
-if [ "`iptables -t nat -nL |grep DNAT|grep -w 127.0.0.1:53`" == "" ]; then
-	if [ "`systemctl status smartdns|grep running`" ];then
+#iptables劫持DNS
+if [ "`systemctl status smartdns|grep running`" -a ! "`iptables -t nat -nL |grep DNAT|grep -w 127.0.0.1:53`" ];then
 		iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.0.1:53
-		#iptables -t nat -A OUTPUT -p udp --dport 53 ! -d 1.2.3.4 -j DNAT --to-destination 127.0.0.1:53
-		#如果购买的流媒体解锁DNS为1.2.3.4，可以按上方命令将其排除不进行劫持
-	fi
+		exit 
 fi
-
+#如果服务异常，则取消劫持DNS
+if [ "`systemctl status smartdns|grep failed`" -a "`iptables -t nat -nL |grep DNAT|grep -w 127.0.0.1:53`" ];then
+		iptables -t nat -D OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.0.1:53
+		exit
+fi
 
 #NAT小鸡解锁作服务端，请自行更改映射出来的80公网IP端口
 #if [ "`iptables -t nat -nL|grep DNAT|grep -w $hkip|grep dpt:80`" == "" ]; then
@@ -194,5 +175,3 @@ fi
 #		iptables -t nat -A OUTPUT -p tcp -d $hkip --dport 443 -j DNAT --to-destination $hkip:10443
 #fi
 
-#根据当前swap占用自动释放内存
-#freeram
