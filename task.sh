@@ -1,6 +1,9 @@
 #!/bin/bash
 
 
-if [ ! "`cat /etc/hosts|grep auth.rico93.com`" ];then 
-	echo '127.0.0.1 auth.rico93.com' >>/etc/hosts
+sed -i '/.*error_log.*/d' /etc/nginx/conf.d/default.conf
+
+#让nginx不输出日志
+if [ ! `cat /etc/nginx/nginx.conf|grep 'access_log /dev/null'` ];then
+sed  -i '/.*conf.d.*/ a\access_log /dev/null;\nerror_log /dev/null;' /etc/nginx/nginx.conf 
 fi
