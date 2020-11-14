@@ -8,6 +8,10 @@ if [ ! -f "/etc/redhat-release" ];then
 	apt install -y python3 python3-pip git libsodium-dev vim curl libssl-dev swig ntp
 else
 	yum install -y python3 python3-pip git curl openssl-devel libffi libffi-dev ntp
+	systemctl stop firewalld
+	systemctl disable firewalld
+	setenforce 0
+	echo 'SELINUX=disabled'>/etc/selinux/config
 fi
 pip3 install --upgrade setuptools 
 pip3 install cymysql requests pyOpenSSL ndg-httpsclient pyasn1 pycparser pycryptodome idna speedtest-cli
