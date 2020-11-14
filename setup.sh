@@ -13,7 +13,7 @@ pip3 install --upgrade setuptools
 pip3 install cymysql requests pyOpenSSL ndg-httpsclient pyasn1 pycparser pycryptodome idna speedtest-cli
 
 cd /var
-rf -f ssr
+rm -f ssr
 git clone -b manyuser https://github.com/GouGoGoal/ssr
 cd ssr
 #先循环一次，将带有-的参数进行配置
@@ -125,7 +125,7 @@ stream {
 50 5 * * 1 root wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/full_chain.pem 
 50 5 * * 1 root wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/private.key">>/etc/crontab
 			systemctl enable nginx
-			systemctl start nginx
+			systemctl restart nginx
 			;;
 		#设置探针监控
 		state)
