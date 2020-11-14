@@ -64,7 +64,7 @@ sysctl -p
 		conf)
 			B=`echo $i|awk -F '=' '{print $2}'`
 			rm -rf /root/$B
-			mv -r ssr /root/$B
+			mv /var/ssr /root/$B
 			cd /root/$B
 			echo "[Unit]
 Description=SSR deamon
@@ -121,16 +121,18 @@ stream {
 }'>/etc/nginx/nginx.conf
 			wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/full_chain.pem
 			wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/private.key
-			echo "#定时从github上更新tls证书
+			if [ ! "`grep /etc/nginx/tls /etc/crontab`" ];then
+				echo "#定时从github上更新tls证书
 50 5 * * 1 root wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/full_chain.pem 
 50 5 * * 1 root wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/private.key">>/etc/crontab
+			fi
 			systemctl enable nginx
 			systemctl restart nginx
 			;;
 		#设置探针监控
 		state)
 			B=`echo $i|awk -F '=' '{print $2}'`
-			sed -i "s|^USER|USER = \"$B\"|g" state.py
+			sed -i "s|^USER.*|USER = \"$B\"|g" state.py
 			mv -f state.py /etc/state.py
 			echo "[Unit]
 Description=state deamon
@@ -147,13 +149,15 @@ WantedBy=multi-user.target">/etc/systemd/system/state.service
 			;;
 		#设置定时重启、定时清理日志等任务
 		task)
-			echo '
+			if [ ! "`grep task.sh /etc/crontab`" ];then
+				echo '
 #每天05:55执行task
 55 5 * * * root curl -k https://raw.githubusercontent.com/GouGoGoal/ssr/manyuser/task.sh|bash
 #每天05:55清理日志日志
 55 5 * * * root find /var/ -name "*.log.*" -exec rm -rf {} \;
 #每天06:00点重启
 0 6 * * * root init 6'>>/etc/crontab
+			fi
 			;;
 		esac
 	fi
@@ -161,8 +165,8 @@ done
 
 #如果没有指定-conf，则默认为systemctl status ssr
 if [ ! "$conf" ];then 
-	rm -f /root/ssr
-	mv -r /var/ssr /root/ssr
+	rm -rf /root/ssr
+	mv /var/ssr /root/ssr
 	echo "[Unit]
 Description=SSR deamon
 After=rc-local.service
@@ -200,9 +204,7 @@ done
 systemctl daemon-reload
 systemctl enable $conf
 systemctl restart $conf
-echo '部署完毕，等待5秒将显示服务状态'
-sleep 5
-systemctl status $conf
+echo '部署完毕'
 
 
 
