@@ -119,11 +119,13 @@ stream {
 		tcp_nodelay on;
 	}
 }'>/etc/nginx/nginx.conf
-			systemctl enable nginx
-			systemctl start nginx
+			wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/full_chain.pem
+			wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/private.key
 			echo "#定时从github上更新tls证书
 50 5 * * 1 root wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/full_chain.pem 
 50 5 * * 1 root wget -N --no-check-certificate -P /etc/nginx/tls https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/private.key">>/etc/crontab
+			systemctl enable nginx
+			systemctl start nginx
 			;;
 		#设置探针监控
 		state)
