@@ -7,23 +7,25 @@ curl -fsL https://ilemonra.in/LemonBenchIntl | bash -s fast  能看到部分流�
 
 ## 一键后端安装
 ```
-bash <(curk -k https://raw.githubusercontent.com/gougogoal/ssr/manyuser/setup.sh') 70 weburl token alihk1 [ovz]
-参数1填0跳过安装ssr，进行其他初始化操作
-参数2是对接地址
-参数3是对接密码
-参数4填0或没有第二个参数，跳过安装监控
-参数5填ovz则不优化内核参数
+bash <(curk -k https://raw.githubusercontent.com/gougogoal/ssr/manyuser/setup.sh') NODE_ID=0 WEBAPI_URL=https://www.baidu.com WEBAPI_TOKEN=password [...]
+#不带-的参数与前端对接有关，分别是对接ID、对接地址、对接密码
+NODE_ID=0
+WEBAPI_URL=https://www.baidu.com 
+WEBAPI_TOKEN=password
+#更多参数请查看userapiconfig.py文件
+#带-的不涉及对接信息，都是非必须参数
+-conf=test #指定参数文件名，后续通过 systemctl status test 管理服务，同时服务文件夹目录改为/root/test，不填则用 systemctl status ssr 来管理，服务文件夹目录为/root/ssr
+-listen=127.0.0.1 #监听端口，若用了隧道，可以把监听地址改成127.0.0.1，可以不暴露SSR端口至公网，默认是0.0.0.0
+-nginx #同时安装nginx，并添加证书更新定时任务
+-bbr #同时开启BBR(若内核不支持则不生效)，并优化内核参数
+-state=123 #对接探针
+-task #添加定时重启，定时清理日志等计划任务
+
 ```
 ## web_transfer.py 第 365行端口偏移
 
-## 参数优化<br>
+## 开启BBR以及内核参数优化<br>
 ```
-#优化最大文件打开
-echo "
-root soft nofile 512000
-root hard nofile 512000
-">>/etc/security/limits.conf
-#优化TCP连接
 echo "
 #关闭IPV6
 net.ipv6.conf.all.disable_ipv6 = 1
@@ -60,13 +62,8 @@ net.ipv4.tcp_wmem = 4096 65536 67108864
 sysctl -p
 
 ```
-
 ```
-优先使用IPV6地址 
-echo "precedence ::ffff:0:0/96  100" >>/etc/gai.conf
-```
-```
-加SSH证书
+加SSH密钥，实现免密登录
 mkdir /root/.ssh 
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA5qK3fDbxZshKP3MbQo4xm1YNmTQsHcapbF8wAXJJcCgxtzujH9QuFCeQzsQ3QET2qZgG1k0GfTV6slRdrJJeI8fdwFgRc28JEhXh4rGx8MUdotJh8eVAnygWATBtet2Au5gpn3s3s44XqgnWXY+bRGJ6WoB58/3fjPG1YZIR5wh9knNxRt/9VO8YCTBqQP3z5hdPuNldx3jgIuFNhcI1qBVnQZ2czC2Zv8sHDDuiuNoaomKsg7LgbhKPnvRfEGb+yZaU/KKwbEJwbFcZkT7QiW90OhYVKT2+K8xEsUpR4ocH+SxgvFrpyKAXkSqF/Wwe32baAlzrNwucLdsS+jBk3w==">>/root/.ssh/authorized_keys;
 
