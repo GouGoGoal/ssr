@@ -13,7 +13,7 @@ pip3 install --upgrade setuptools
 pip3 install cymysql requests pyOpenSSL ndg-httpsclient pyasn1 pycparser pycryptodome idna speedtest-cli
 
 cd /var
-rm -f ssr
+rm -rf ssr
 git clone -b manyuser https://github.com/GouGoGoal/ssr
 cd ssr
 #先循环一次，将带有-的参数进行配置

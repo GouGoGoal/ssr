@@ -7,7 +7,7 @@ curl -fsL https://ilemonra.in/LemonBenchIntl | bash -s fast  能看到部分流�
 
 ## 一键后端安装
 ```
-bash <(curk -k https://raw.githubusercontent.com/gougogoal/ssr/manyuser/setup.sh') NODE_ID=0 WEBAPI_URL=https://www.baidu.com WEBAPI_TOKEN=password [...]
+bash <(curl -k https://raw.githubusercontent.com/gougogoal/ssr/manyuser/setup.sh') NODE_ID=0 WEBAPI_URL=https://www.baidu.com WEBAPI_TOKEN=password [...]
 #不带-的参数与前端对接有关，分别是对接ID、对接地址、对接密码
 NODE_ID=0
 WEBAPI_URL=https://www.baidu.com 
