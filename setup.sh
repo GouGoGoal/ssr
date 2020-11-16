@@ -16,10 +16,9 @@ fi
 pip3 install --upgrade setuptools 
 pip3 install cymysql requests pyOpenSSL ndg-httpsclient pyasn1 pycparser pycryptodome idna speedtest-cli
 
-cd /var
-rm -rf ssr
-git clone -b manyuser https://github.com/GouGoGoal/ssr
-cd ssr
+rm -rf /tmp/ssr
+git clone -b manyuser https://github.com/GouGoGoal/ssr /tmp/ssr
+cd /tmp/ssr
 #先循环一次，将带有-的参数进行配置
 for i in $*
 do
@@ -68,7 +67,7 @@ sysctl -p
 		conf)
 			B=`echo $i|awk -F '=' '{print $2}'`
 			rm -rf /root/$B
-			mv /var/ssr /root/$B
+			mv /tmp/ssr /root/$B
 			cd /root/$B
 			echo "[Unit]
 Description=SSR deamon
@@ -170,7 +169,7 @@ done
 #如果没有指定-conf，则默认为systemctl status ssr
 if [ ! "$conf" ];then 
 	rm -rf /root/ssr
-	mv /var/ssr /root/ssr
+	mv /tmp/ssr /root/ssr
 	echo "[Unit]
 Description=SSR deamon
 After=rc-local.service
