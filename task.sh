@@ -5,4 +5,4 @@ if [ ! "`grep tcp_ecn /etc/sysctl.conf`" ];then
 	sysctl -p
 fi
 
-sed 's|/master/nginx/tls/|/soga/|g' /etc/crontab
+sed -i 's|/master/nginx/tls/|/soga/|g' /etc/crontab
