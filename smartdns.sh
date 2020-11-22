@@ -1,16 +1,28 @@
 #!/bin/bash
-#设置查询DNS，建议在哪儿解析就设置哪儿的DNS
+#检查host指令
+if [ ! "`command -v host`" ];then
+	if [ ! -f "/etc/redhat-release" ];then
+		apt install -y host
+	else yum install -y bind-utils
+    fi
+fi
+#将域名解析成IP的函数
+function DTI()
+{
 DNS='1.1.1.1'
+echo `host -4 -T -t A -W 1 $1 $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+}
+
 #获取当前的流媒体解锁IP，若不解锁某区域的流媒体注释掉即可
-twip=`host -4 -T -t A -W 1 unlock.tw.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
-hkip=`host -4 -T -t A -W 1 unlock.hk.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
-jpip=`host -4 -T -t A -W 1 unlock.jp.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
-usip=`host -4 -T -t A -W 1 unlock.us.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
-#sgip=`host -4 -T -t A -W 1 unlock.sg.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
-#cnip=`host -4 -T -t A -W 1 unlock.cn.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+twip=`DTI unlock.tw.soulout.club`
+hkip=`DTI unlock.hk.soulout.club`
+jpip=`DTI unlock.jp.soulout.club`
+usip=`DTI unlock.us.soulout.club`
+sgip=`DTI unlock.sg.soulout.club`
+cnip=`DTI unlock.cn.soulout.club`
 
 #奈飞IP，就近解锁，美国鸡就写usip
-#nfip=$hkip
+nfip=$sgip
 
 #若查询不到则赋值为-，即忽略
 if [ ! "$twip" ];then twip='-';fi
@@ -173,15 +185,12 @@ else
 	fi     
 fi
 
-#iptables劫持DNS
-if [ "`systemctl status smartdns|grep running`" -a ! "`iptables -t nat -nL |grep DNAT|grep -w 127.0.0.1:53`" ];then
+#监测smartdns服务状态，监测iptables劫持
+if [ "`systemctl status smartdns|grep running`" ];then
+	if [ ! "`iptables -t nat -nL |grep DNAT|grep -w 127.0.0.1:53`" ];then
 		iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.0.1:53
-		exit 
-fi
-#如果服务异常，则取消劫持DNS
-if [ "`systemctl status smartdns|grep failed`" -a "`iptables -t nat -nL |grep DNAT|grep -w 127.0.0.1:53`" ];then
-		iptables -t nat -D OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.0.1:53
-		exit
+	fi
+else iptables -t nat -D OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.0.1:53
 fi
 
 #NAT小鸡解锁作服务端，请自行更改映射出来的80公网IP端口
