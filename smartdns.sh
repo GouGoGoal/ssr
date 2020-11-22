@@ -7,6 +7,7 @@ hkip=`host -4 -T -t A -W 1 unlock.hk.soulout.club $DNS|grep -v $DNS|grep -E -o "
 jpip=`host -4 -T -t A -W 1 unlock.jp.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
 usip=`host -4 -T -t A -W 1 unlock.us.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
 #sgip=`host -4 -T -t A -W 1 unlock.sg.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+#cnip=`host -4 -T -t A -W 1 unlock.cn.soulout.club $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
 
 #奈飞IP，就近解锁，美国鸡就写usip
 #nfip=$hkip
@@ -17,6 +18,7 @@ if [ ! "$hkip" ];then hkip='-';fi
 if [ ! "$jpip" ];then jpip='-';fi
 if [ ! "$usip" ];then usip='-';fi
 if [ ! "$sgip" ];then sgip='-';fi
+if [ ! "$cnip" ];then sgip='-';fi
 if [ ! "$nfip" ];then nfip='-';fi
 
 #定义刷新smartdns参数并重启的函数
@@ -133,6 +135,26 @@ address /peacocktv.com/$usip
 address /britbox.com/$usip
 address /bbccomm.s.llnwi.net/$usip
 address /vod-dash-ntham-comm-live.akamaized.net/$usip
+#中国腾讯视频
+address /v.qq.com/$cnip
+address /video.qq.com/$cnip
+address /l.qq.com/$cnip
+address /fp.qq.com/$cnip
+address /dp3.qq.com/$cnip
+address /trace.qq.com/$cnip
+address /btrace.qq.com/$cnip
+address /pingfore.qq.com/$cnip
+#中国爱奇艺
+address /iqiyi.com/$cnip
+address /qy.net/$cnip
+address /iqiyipic.com/$cnip
+#中国优酷
+address /youku.com/$cnip
+address /alicdn.com/$cnip
+address /ykimg.com/$cnip
+#中国芒果TV
+address /mgtv.com/$cnip
+address /hitv.com/$cnip
 ">/etc/smartdns.conf
 #重启服务
 systemctl restart smartdns
@@ -143,7 +165,7 @@ if [ ! -f "/etc/smartdns.conf" ]; then
 	flush_smartdns_conf
 else
 	#对比IP变化，有变化就刷新重启smartdns
-	if [ ! "`grep $twip /etc/smartdns.conf`" -o ! "`grep $hkip /etc/smartdns.conf`" -o ! "`grep $jpip /etc/smartdns.conf`" -o ! "`grep $usip /etc/smartdns.conf`" -o ! "`grep $sgip /etc/smartdns.conf`" ];then
+	if [ ! "`grep $twip /etc/smartdns.conf`" -o ! "`grep $hkip /etc/smartdns.conf`" -o ! "`grep $jpip /etc/smartdns.conf`" -o ! "`grep $usip /etc/smartdns.conf`" -o ! "`grep $sgip /etc/smartdns.conf`" -o ! "`grep $cnip /etc/smartdns.conf`" ];then
 		echo 'IP有变化，已重新生成配置文件'
 		flush_smartdns_conf
 	else 
