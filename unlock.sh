@@ -7,7 +7,7 @@ if [ ! "`command -v host`" ];then
     else 
 		yum install -y bind-utils
     fi
-	if [ "$?"!= 0 ];then 
+	if [ "$?" != 0 ];then 
 		echo "host命令安装失败，请自行解决后重新运行该脚本"
 		exit
 	fi

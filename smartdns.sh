@@ -167,6 +167,8 @@ address /ykimg.com/$cnip
 #中国芒果TV
 address /mgtv.com/$cnip
 address /hitv.com/$cnip
+
+address /api.soulout.club/172.93.188.102
 ">/etc/smartdns.conf
 #重启服务
 systemctl restart smartdns
