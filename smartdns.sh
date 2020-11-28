@@ -168,7 +168,7 @@ address /ykimg.com/$cnip
 address /mgtv.com/$cnip
 address /hitv.com/$cnip
 
-address /api.soulout.club/172.93.188.102
+#address /api.soulout.club/172.93.188.102
 ">/etc/smartdns.conf
 #重启服务
 systemctl restart smartdns
