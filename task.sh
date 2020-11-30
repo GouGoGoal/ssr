@@ -1,8 +1,4 @@
 #!/bin/bash
 
-if [ ! "`grep tcp_ecn /etc/sysctl.conf`" ];then 
-	echo 'net.ipv4.tcp_ecn = 1'>>/etc/sysctl.conf
-	sysctl -p
-fi
-
-sed -i 's|/master/nginx/tls/|/soga/|g' /etc/crontab
+sed -i "s|.*/hulu.jp/.*|address /hulu.jp/\$jpip|g" /etc/smartdns.sh
+rm /etc/smartdns.conf
