@@ -105,7 +105,7 @@ address /brightcove.com/$jpip
 address /nicovideo.jp/$jpip
 address /nimg.jp/$jpip
 #hulu.jp
-#address /hulu.jp/$jpip
+address /hulu.jp/$jpip
 address /hjholdings.tv/$jpip
 #DAZN
 address /dazn.com/$jpip
