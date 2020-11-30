@@ -1,11 +1,4 @@
 #!/bin/bash
-#检查host指令
-if [ ! "`command -v host`" ];then
-	if [ ! -f "/etc/redhat-release" ];then
-		apt install -y host
-	else yum install -y bind-utils
-    fi
-fi
 #将域名解析成IP的函数
 function DTI()
 {

@@ -1,9 +1,8 @@
 #! /bin/bash
-
 #检查host指令
 if [ ! "`command -v host`" ];then
     if [ ! -f "/etc/redhat-release" ];then
-        apt install -y host
+        apt install -y bind9-host
     else 
 		yum install -y bind-utils
     fi
