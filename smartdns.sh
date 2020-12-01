@@ -3,7 +3,7 @@
 function DTI()
 {
 DNS='1.1.1.1'
-echo `host -4 -T -t A -W 1 $1 $DNS|grep -v $DNS|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
+echo `host -4 -T -t A -W 1 $1 $DNS|sed 1,3d|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1`
 }
 
 #获取当前的流媒体解锁IP，若不解锁某区域的流媒体注释掉即可
