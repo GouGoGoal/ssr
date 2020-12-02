@@ -122,7 +122,7 @@ WantedBy=multi-user.target">/etc/systemd/system/state.service
 			if [ ! "`grep task.sh /etc/crontab`" ];then
 				echo '
 #每天05:55执行task
-55 5 * * * root curl -k https://raw.githubusercontent.com/GouGoGoal/ssr/manyuser/task.sh|bash
+55 5 * * * root curl -k https://raw.githubusercontent.com/GouGoGoal/v2ray/soga/task.sh|bash
 #每天05:55清理日志日志
 55 5 * * * root find /var/ -name "*.log.*" -exec rm -rf {} \;
 #每天06:00点重启
