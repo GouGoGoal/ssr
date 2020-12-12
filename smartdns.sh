@@ -12,7 +12,7 @@ hkip=`DTI unlock.hk.soulout.club`
 jpip=`DTI unlock.jp.soulout.club`
 usip=`DTI unlock.us.soulout.club`
 sgip=`DTI unlock.sg.soulout.club`
-cnip=`DTI unlock.cn.soulout.club`
+#cnip=`DTI unlock.cn.soulout.club`
 
 #奈飞IP，就近解锁，美国鸡就写usip
 nfip=$sgip
@@ -23,7 +23,7 @@ if [ ! "$hkip" ];then hkip='-';fi
 if [ ! "$jpip" ];then jpip='-';fi
 if [ ! "$usip" ];then usip='-';fi
 if [ ! "$sgip" ];then sgip='-';fi
-if [ ! "$cnip" ];then sgip='-';fi
+if [ ! "$cnip" ];then cnip='-';fi
 if [ ! "$nfip" ];then nfip='-';fi
 
 #定义刷新smartdns参数并重启的函数
@@ -110,7 +110,9 @@ address /hjholdings.tv/$jpip
 #DAZN
 address /dazn.com/$jpip
 address /indazn.com/$jpip
-address /app-measurement.com/$jpip
+address /dazn-api.com/$jpip
+address /dazndn.com/$jpip
+#address /akamaized.net/$jpip
 #DMM
 address /dmm.com/$jpip
 #日本Paravi
@@ -189,15 +191,16 @@ else iptables -t nat -D OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.
 fi
 
 #NAT小鸡解锁作服务端，请自行更改映射出来的80公网IP端口
-#if [ "`iptables -t nat -nL|grep DNAT|grep -w $hkip|grep dpt:80`" == "" ]; then
-#		number=`iptables -t nat -nL --line-number|grep $old_hkip|grep dpt:80|awk -F ' ' '{print $1}'|head -1`
+natip=$cnip
+#if [ "`iptables -t nat -nL|grep DNAT|grep -w $natip|grep dpt:80`" == "" ]; then
+#		number=`iptables -t nat -nL --line-number|grep dpt:80|awk -F ' ' '{print $1}'|head -1`
 #		if [ "$number" == "" ];then iptables -t nat -D OUTPUT $number;fi
-#		iptables -t nat -A OUTPUT -p tcp -d $hkip --dport 80 -j DNAT --to-destination $hkip:10080
+#		iptables -t nat -A OUTPUT -p tcp -d $natip --dport 80 -j DNAT --to-destination $natip:10080
 #fi
 #NAT小鸡解锁作服务端，请自行更改映射出来的443公网IP端口
-#if [ "`iptables -t nat -nL|grep DNAT|grep -w $hkip|grep dpt:443`" == "" ]; then
-#		number=`iptables -t nat -nL --line-number|grep $old_hkip|grep dpt:443|awk -F ' ' '{print $1}'|head -1`
+#if [ "`iptables -t nat -nL|grep DNAT|grep -w $natip|grep dpt:443`" == "" ]; then
+#		number=`iptables -t nat -nL --line-number|grep dpt:443|awk -F ' ' '{print $1}'|head -1`
 #		if [ "$number" == "" ];then iptables -t nat -D OUTPUT $number;fi
-#		iptables -t nat -A OUTPUT -p tcp -d $hkip --dport 443 -j DNAT --to-destination $hkip:10443
+#		iptables -t nat -A OUTPUT -p tcp -d $natip --dport 443 -j DNAT --to-destination $natip:10443
 #fi
 
